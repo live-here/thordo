@@ -9,12 +9,14 @@ AWS.config.update({
 const dynamodb = new AWS.DynamoDB();
 
 const params = {
-  TableName: "user",
+  TableName: "task",
   KeySchema: [
     { AttributeName: "id", KeyType: "HASH" },
+    { AttributeName: "userId", KeyType: "RANGE" }
   ],
   AttributeDefinitions: [
     { AttributeName: "id", AttributeType: "S" },
+    { AttributeName: "userId", AttributeType: "S" },
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 10,

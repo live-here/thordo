@@ -1,0 +1,31 @@
+GET http://localhost:4001/users/123
+Content-Type: application/json
+
+###
+
+GET http://localhost:4001/users
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:4001/users/147
+Content-Type: application/json
+
+###
+
+POST http://localhost:4001/users
+Content-Type: application/json
+
+{
+  "id": "123",
+  "email": "rapha@livehere.com.br"
+}
+
+###
+
+PUT http://localhost:4001/users/147
+Content-Type: application/json
+
+{
+  "email": "erick@livehere.com.br"
+}
