@@ -11,21 +11,6 @@ const initApp = () => {
     console.log("App Listening on port", PORT);
   });
 
-  const users = [
-    {
-      id: "1",
-      name: "luizinho",
-    },
-    {
-      id: "2",
-      name: "evaristinho costa",
-    },
-    {
-      id: "3",
-      name: "da massa",
-    },
-  ];
-
   app.use(bodyParser.json({ type: "application/json" }));
 
   app.get("/users", async (req, res) => {
