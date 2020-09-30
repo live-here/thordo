@@ -1,0 +1,11 @@
+
+POST http://localhost:4001/tasks
+Content-Type: application/json
+
+{
+  "id": "123",
+  "userId": "3",
+  "status": false,
+  "title": "Bom dia ",
+  "description": "oi wiix aqui"
+}

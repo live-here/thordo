@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 
 AWS.config.update({
   region: "us-west-2",
-  endpoint: "http://localhost:8000",
+  endpoint: "http://localhost:8001",
 });
 // aws dynamodb get-item --endpoint-url http://localhost:8000 --table-name user --key ' { "id": { "S": "123" } }'
 // aws dynamodb list-tables --endpoint-url http://localhost:8000
@@ -11,8 +11,8 @@ const dynamodb = new AWS.DynamoDB();
 const params = {
   TableName: "task",
   KeySchema: [
-    { AttributeName: "id", KeyType: "HASH" },
-    { AttributeName: "userId", KeyType: "RANGE" }
+    { AttributeName: "id", KeyType: "RANGE" },
+    { AttributeName: "userId", KeyType: "HASH" }
   ],
   AttributeDefinitions: [
     { AttributeName: "id", AttributeType: "S" },
