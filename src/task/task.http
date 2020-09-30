@@ -3,9 +3,14 @@ POST http://localhost:4001/tasks
 Content-Type: application/json
 
 {
-  "id": "123",
+  "id": "1223",
   "userId": "3",
   "status": false,
   "title": "Bom dia ",
   "description": "oi wiix aqui"
 }
+
+###
+
+GET http://localhost:4001/tasks?userId=3
+Content-Type: application/json

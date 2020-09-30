@@ -2,10 +2,7 @@ require('trace');
 const express = require("express");
 const bodyParser = require("body-parser");
 const { AWS } = require("./config");
-AWS.config.update({
-  region: "us-west-2",
-  endpoint: "http://localhost:8001",
-});
+
 const PORT = process.env.PORT || 4001;
 
 const initApp = () => {
@@ -42,10 +39,20 @@ const initApp = () => {
 
   app.use(bodyParser.json({ type: "application/json" }));
 
-  app.get("/tasks", (req, res) => {
+  app.get("/tasks", async (req, res) => {
     const { userId } = req.query;
-    const uTasks = tasks.filter((t) => t.userId === userId);
-    res.json(uTasks);
+    
+    const result = await dynamoDb.query({
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': { S: userId }, 
+      },
+      TableName: 'task',
+    }).promise();
+
+    console.log(JSON.stringify(result, null, 2));
+
+    res.json();
   });
 
   app.get("/tasks/:id", (req, res) => {

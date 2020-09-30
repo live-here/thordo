@@ -11,8 +11,8 @@ const dynamodb = new AWS.DynamoDB();
 const params = {
   TableName: "task",
   KeySchema: [
-    { AttributeName: "id", KeyType: "RANGE" },
-    { AttributeName: "userId", KeyType: "HASH" }
+    { AttributeName: "userId", KeyType: "HASH" },
+    { AttributeName: "id", KeyType: "RANGE" }
   ],
   AttributeDefinitions: [
     { AttributeName: "id", AttributeType: "S" },
