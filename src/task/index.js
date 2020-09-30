@@ -1,10 +1,17 @@
+require('trace');
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const { AWS } = require("./config");
+AWS.config.update({
+  region: "us-west-2",
+  endpoint: "http://localhost:8001",
+});
 const PORT = process.env.PORT || 4001;
 
 const initApp = () => {
   const app = express();
+  const dynamoDb = new AWS.DynamoDB();
+
   const tasks = [
     {
       id: "1",
@@ -47,8 +54,21 @@ const initApp = () => {
     res.json(task);
   });
 
-  app.post("/tasks", (req, res) => {
-    tasks.push(req.body);
+  app.post("/tasks", async (req, res) => {
+    const { id, userId, title, description, status } = req.body;
+
+    const result = await dynamoDb.putItem({ 
+      TableName: 'task',
+      Item: {
+        id: { S: id },
+        userId: { S: userId },
+        title: { S: title },
+        status: { BOOL: status }, 
+        description: { S: description }
+      }
+    }).promise();
+
+    console.log(result);
     res.status(201).json(req.body);
   });
 
