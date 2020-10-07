@@ -1,37 +1,14 @@
 require('trace');
 const express = require("express");
+const uuid = require("uuid");
 const bodyParser = require("body-parser");
 const { AWS } = require("./config");
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4002;
 
 const initApp = () => {
   const app = express();
   const dynamoDb = new AWS.DynamoDB();
-
-  const tasks = [
-    {
-      id: "1",
-      userId: "2",
-      status: true,
-      title: "Eai pessoal",
-      description: "oi wiix aqui",
-    },
-    {
-      id: "2",
-      status: false,
-      userId: "3",
-      title: "Caio",
-      description: "eae",
-    },
-    {
-      id: "3",
-      status: false,
-      userId: "3",
-      title: "Bom dia ",
-      description: "oi wiix aqui",
-    },
-  ];
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log("App Listening on port", PORT);
@@ -50,9 +27,8 @@ const initApp = () => {
       TableName: 'task',
     }).promise();
 
-    console.log(JSON.stringify(result, null, 2));
 
-    res.json();
+    res.json(result);
   });
 
   app.get("/tasks/:id", (req, res) => {
@@ -62,12 +38,12 @@ const initApp = () => {
   });
 
   app.post("/tasks", async (req, res) => {
-    const { id, userId, title, description, status } = req.body;
+    const { userId, title, description, status } = req.body;
 
     const result = await dynamoDb.putItem({ 
       TableName: 'task',
       Item: {
-        id: { S: id },
+        id: { S: uuid.v1() },
         userId: { S: userId },
         title: { S: title },
         status: { BOOL: status }, 
@@ -79,24 +55,36 @@ const initApp = () => {
     res.status(201).json(req.body);
   });
 
-  app.put("/tasks/:id", (req, res) => {
+  app.put("/tasks/:id", async (req, res) => {
     const { id } = req.params;
-
-    const foundTask = tasks.findIndex((task) => task.id === id);
-    tasks[foundTask] = {
-      ...tasks[foundTask],
-      ...req.body,
-      id: tasks[foundTask].id,
-    };
-    res.status(200).json(tasks[foundTask]);
+    const { description, title, status, userId } = req.body;
+    const result = await dynamoDb.putItem({
+      TableName: 'task',
+      Item: {
+        id: { S: id },
+        userId: { S: userId },
+        title: { S: title },
+        status: { BOOL: status }, 
+        description: { S: description }
+      }
+    }).promise();
+    console.log(JSON.stringify(result, null, 2));
+    
+    res.json(result);
   });
 
-  app.delete("/tasks/:id", (req, res) => {
+  app.delete("/tasks/:id", async (req, res) => {
     const { id } = req.params;
-
-    const index = tasks.findIndex((task) => task.id === id);
-    tasks.splice(index, 1);
-    res.status(200).json(tasks);
+    const { userId } = req.body;
+    const result = await dynamoDb.deleteItem({
+      TableName: 'task',
+      Key: {
+        id: { S: id },
+        userId: { S: userId }
+      }
+    }).promise();
+    console.log(result);
+    res.status(204);
   });
 };
 

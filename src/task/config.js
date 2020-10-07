@@ -15,8 +15,8 @@ const params = {
     { AttributeName: "id", KeyType: "RANGE" }
   ],
   AttributeDefinitions: [
-    { AttributeName: "id", AttributeType: "S" },
     { AttributeName: "userId", AttributeType: "S" },
+    { AttributeName: "id", AttributeType: "S" },
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 10,
