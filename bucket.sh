@@ -1,0 +1,1 @@
+aws --endpoint-url=http://localhost:4566 s3 mb s3://thordo-bucket  --region us-east-2

@@ -7,6 +7,7 @@ AWS.config.update({
 // aws dynamodb get-item --endpoint-url http://localhost:8000 --table-name user --key ' { "id": { "S": "123" } }'
 // aws dynamodb list-tables --endpoint-url http://localhost:8000
 const dynamodb = new AWS.DynamoDB();
+setupSQS();
 
 const params = {
   TableName: "task",
@@ -22,6 +23,10 @@ const params = {
     ReadCapacityUnits: 10,
     WriteCapacityUnits: 10,
   },
+  StreamSpecification: {
+    StreamEnabled: true,
+    StreamViewType: 'NEW_AND_OLD_IMAGES'
+  }
 };
 
 if (require.main === module) {
@@ -38,6 +43,26 @@ if (require.main === module) {
     }))
     console.log('tables migrations result', res);
   })().catch(console.error);
+}
+
+function setupSQS() {
+  const sqs = new AWS.SQS({ endpoint: 'http://127.0.0.1:4566' });
+
+  const params = {
+    QueueName: 'TASK_QUEUE',
+    Attributes: {
+      'DelaySeconds': '60',
+      'MessageRetentionPeriod': '86400',
+    }
+  };
+
+  sqs.createQueue(params, function(err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data.QueueUrl);
+    }
+  });
 }
 
 module.exports.AWS = AWS;
